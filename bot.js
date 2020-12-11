@@ -97,18 +97,29 @@ async function main() {
             }
         })
 
+        command(client, ['check', 'new music'], message => {
+            getNewMusic().then(str => {
+                if (str)
+                    message.channel.send('**New Music Today from:**\n\n' + str)
+                else
+                    message.channel.send('No new music today :(')
+            }, err => {
+                console.error(err)
+            })
+        })
     })
+
 }
 
 main()
 client.login(config.discord_token)
 
 async function addNewArtist(name, uri) {
-    database.ref('artists/').child(name).set(uri);
+    await database.ref('artists/').child(name).set(uri);
 }
 
 async function removeArtist(name) {
-    database.ref(`artists/${name}`).remove().then(err => {
+    await database.ref(`artists/${name}`).remove().then(err => {
         if (err) {
             console.error(err)
         } else {
@@ -118,12 +129,27 @@ async function removeArtist(name) {
     })
 }
 
-async function checkNewMusic() {
-
+async function getNewMusic() {
+    let date = new Date().toJSON().slice(0, 10).replace(/-/g, '-');
+    let newMusicStr = ''
+    for (const [name, uri] of Object.entries(artistDict)) {
+        await spotifyApi.getArtistAlbums(uri, {
+            album_type: 'album',
+            limit: 1
+        }).then(data => {
+            let album = data.body.items[0]
+            if (album && album.release_date === date) {
+                newMusicStr += `${album.name} by ${name}\n`
+            }
+        }, err => {
+            console.error(err)
+        })
+    }
+    return newMusicStr
 }
 
 async function fillArtistDict() {
-    database.ref('artists/').once('value', snapshot => {
+    await database.ref('artists/').once('value', snapshot => {
         let counter = 0
         snapshot.forEach(childSnapshot => {
             artistDict[Object.keys(snapshot.val())[counter]] = childSnapshot.val()
@@ -135,7 +161,7 @@ async function fillArtistDict() {
 }
 
 async function refreshAccessToken() {
-    spotifyApi.clientCredentialsGrant().then(
+    await spotifyApi.clientCredentialsGrant().then(
         data => {
             // console.log(data.body)
             // console.log('The access token expires in ' + data.body['expires_in']);
