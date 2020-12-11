@@ -18,10 +18,10 @@ const spotifyApi = new SpotifyWebApi({
     clientSecret: config.spotify_client_secret,
 })
 
-let artistArray = new Array()
+let artistDict = {}
 
 async function main() {
-    await fillArtistArray()
+    await fillArtistDict()
     await refreshAccessToken()
 
     client.on('ready', () => {
@@ -38,10 +38,39 @@ async function main() {
                     data => {
                         let artistData = data.body.artists.items[0]
                         if (artistData) {
-                            message.channel.send(`${artistName}:  ${artistData.name}`)
+                            message.channel.send(`Adding:  ${artistData.name}`)
                             addNewArtist(artistData.name.replace('$', 'S').replace(',', ''), artistData.uri.replace('spotify:artist:', ''))
                         } else {
-                            message.channel.send(`Enter a valid artist name. i.e. \'${config.prefix}add Drake\'`)
+                            message.channel.send(`Enter a valid artist name.\ni.e. \'${config.prefix}add Drake\'`)
+                        }
+                    }, err => {
+                        console.error(err)
+                    }
+                )
+            }
+        })
+
+        command(client, 'rm', message => {
+            let artistName = message.content.replace(`${config.prefix}rm `, '')
+            if (message.content === `${config.prefix}add` || !artistName) {
+                message.channel.send(`Enter a valid artist name.\ni.e. \'${config.prefix}remove Drake\'`)
+            } else {
+                spotifyApi.searchArtists(artistName, {
+                    limit: 1
+                }).then(
+                    data => {
+                        let artistData = data.body.artists.items[0]
+                        if (artistData) {
+                            let artistName = artistData.name
+                            if (artistName && artistDict.hasOwnProperty(artistName)) {
+                                artistName.replace('$', 'S').replace(',', '')
+                                message.channel.send(`Removing:  ${artistName}`)
+                                removeArtist(artistName)
+                            } else {
+                                message.channel.send(`Artist does not exist in your list of artists.\nTry \'${config.prefix}ls\' to list your added artists.`)
+                            }
+                        } else {
+                            message.channel.send(`Enter a valid artist name.\ni.e. \'${config.prefix}rm Drake\'`)
                         }
                     }, err => {
                         console.error(err)
@@ -51,11 +80,11 @@ async function main() {
         })
 
         command(client, ['ls', 'list'], message => {
-            if (artistArray) {
+            if (artistDict) {
                 let output = '**__All artists__**: \n\n'
-                artistArray.forEach(artist => {
-                    output += `${artist.name} ${artist.uri}\n`
-                })
+                for (const [name, uri] of Object.entries(artistDict)) {
+                    output += `${name} ${uri}\n`
+                }
                 message.channel.send(output)
             }
         })
@@ -78,14 +107,26 @@ async function addNewArtist(name, uri) {
     database.ref('artists/').child(name).set(uri);
 }
 
-async function fillArtistArray() {
+async function removeArtist(name) {
+    database.ref(`artists/${name}`).remove().then(err => {
+        if (err) {
+            console.error(err)
+        } else {
+            delete artistDict[name]
+            console.log('Successfully removed artist.')
+        }
+    })
+}
+
+async function checkNewMusic() {
+
+}
+
+async function fillArtistDict() {
     database.ref('artists/').once('value', snapshot => {
         let counter = 0
         snapshot.forEach(childSnapshot => {
-            artistArray.push({
-                name: Object.keys(snapshot.val())[counter],
-                uri: childSnapshot.val()
-            })
+            artistDict[Object.keys(snapshot.val())[counter]] = childSnapshot.val()
             counter++
         })
     }, err => {
@@ -103,7 +144,7 @@ async function refreshAccessToken() {
             // Save the access token so that it's used in future calls
             spotifyApi.setAccessToken(data.body['access_token']);
         }, err => {
-            console.log('Something went wrong when retrieving an access token', err);
+            console.error('Something went wrong when retrieving an access token', err);
         }
     )
 }
