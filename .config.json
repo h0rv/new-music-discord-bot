@@ -1,0 +1,10 @@
+{
+    "prefix": ">",
+    "discord_token": "",
+    "spotify_access_token": "",
+    "spotify_client_id": "",
+    "spotify_client_secret": "",
+    "firebase_key": "",
+    "firebase_database_url": "",
+    "firebase_project_id": ""
+}
