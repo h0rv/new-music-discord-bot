@@ -177,20 +177,6 @@ async function getNewMusic() {
         }, err => {
             console.error(err)
         })
-        // add featured on new songs
-        // await spotifyApi.getArtistAlbums(uri, {
-        //     album_type: 'appears_on',
-        //     limit: 1
-        // }).then(data => {
-        //     let album = data.body.items[0]
-        //     console.log(album)
-        //     if (album && album.release_date === date) {
-        //         console.log(album.name, album.release_date)
-        //         newMusicStr += `${album.name} by ${name}\n`
-        //     }
-        // }, err => {
-        //     console.error(err)
-        // })
         if (newMusicStr)
             embed.fields.push({
                 'name': name,
@@ -224,6 +210,7 @@ function getFormattedDate() {
 }
 
 async function fillArtistDict() {
+    artistDict = {}
     await database.ref('artists/').once('value', snapshot => {
         let counter = 0
         snapshot.forEach(childSnapshot => {
