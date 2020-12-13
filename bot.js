@@ -20,98 +20,99 @@ const spotifyApi = new SpotifyWebApi({
 
 let artistDict = {}
 
-async function main() {
+
+
+client.on('ready', async () => {
     await fillArtistDict()
     await refreshAccessToken()
+    console.log("Discord Client Ready")
 
-    client.on('ready', () => {
-        console.log("Discord Client Ready")
-
-        command(client, 'add', message => {
-            let artistName = message.content.replace(`${config.prefix}add `, '')
-            if (message.content === `${config.prefix}add` || !artistName) {
-                message.channel.send(`Enter a valid artist name. i.e. \'${config.prefix}add Drake\'`)
-            } else {
-                spotifyApi.searchArtists(artistName, {
-                    limit: 1
-                }).then(
-                    data => {
-                        let artistData = data.body.artists.items[0]
-                        if (artistData) {
-                            message.channel.send(`Adding:  ${artistData.name}`)
-                            addNewArtist(artistData.name.replace('$', 'S').replace(',', ''), artistData.uri.replace('spotify:artist:', ''))
-                        } else {
-                            message.channel.send(`Enter a valid artist name.\ni.e. \'${config.prefix}add Drake\'`)
-                        }
-                    }, err => {
-                        console.error(err)
+    command(client, 'add', message => {
+        let artistName = message.content.replace(`${config.prefix}add `, '')
+        if (message.content === `${config.prefix}add` || !artistName) {
+            message.channel.send(`Enter a valid artist name. i.e. \'${config.prefix}add Drake\'`)
+        } else {
+            spotifyApi.searchArtists(artistName, {
+                limit: 1
+            }).then(
+                data => {
+                    let artistData = data.body.artists.items[0]
+                    if (artistData) {
+                        message.channel.send(`Adding:  ${artistData.name}`)
+                        addNewArtist(artistData.name.replace('$', 'S').replace(',', ''), artistData.uri.replace('spotify:artist:', ''))
+                    } else {
+                        message.channel.send(`Enter a valid artist name.\ni.e. \'${config.prefix}add Drake\'`)
                     }
-                )
-            }
-        })
-
-        command(client, 'rm', message => {
-            let artistName = message.content.replace(`${config.prefix}rm `, '')
-            if (message.content === `${config.prefix}add` || !artistName) {
-                message.channel.send(`Enter a valid artist name.\ni.e. \'${config.prefix}remove Drake\'`)
-            } else {
-                spotifyApi.searchArtists(artistName, {
-                    limit: 1
-                }).then(
-                    data => {
-                        let artistData = data.body.artists.items[0]
-                        if (artistData) {
-                            let artistName = artistData.name
-                            if (artistName && artistDict.hasOwnProperty(artistName)) {
-                                artistName.replace('$', 'S').replace(',', '')
-                                message.channel.send(`Removing:  ${artistName}`)
-                                removeArtist(artistName)
-                            } else {
-                                message.channel.send(`Artist does not exist in your list of artists.\nTry \'${config.prefix}ls\' to list your added artists.`)
-                            }
-                        } else {
-                            message.channel.send(`Enter a valid artist name.\ni.e. \'${config.prefix}rm Drake\'`)
-                        }
-                    }, err => {
-                        console.error(err)
-                    }
-                )
-            }
-        })
-
-        command(client, ['ls', 'list'], message => {
-            if (artistDict) {
-                let output = '**__All artists__**: \n\n'
-                for (const [name, uri] of Object.entries(artistDict)) {
-                    output += `${name} ${uri}\n`
+                }, err => {
+                    console.error(err)
                 }
-                message.channel.send(output)
-            }
-        })
+            )
+        }
+    })
 
-        command(client, ['cc', 'clearchannel'], message => {
-            if (message.member.hasPermission('ADMINISTRATOR')) {
-                message.channel.messages.fetch().then((results) => {
-                    message.channel.bulkDelete(results)
-                })
-            }
-        })
+    command(client, 'rm', message => {
+        let artistName = message.content.replace(`${config.prefix}rm `, '')
+        if (message.content === `${config.prefix}add` || !artistName) {
+            message.channel.send(`Enter a valid artist name.\ni.e. \'${config.prefix}remove Drake\'`)
+        } else {
+            spotifyApi.searchArtists(artistName, {
+                limit: 1
+            }).then(
+                data => {
+                    let artistData = data.body.artists.items[0]
+                    if (artistData) {
+                        let artistName = artistData.name
+                        if (artistName && artistDict.hasOwnProperty(artistName)) {
+                            artistName.replace('$', 'S').replace(',', '')
+                            message.channel.send(`Removing:  ${artistName}`)
+                            removeArtist(artistName)
+                        } else {
+                            message.channel.send(`Artist does not exist in your list of artists.\nTry \'${config.prefix}ls\' to list your added artists.`)
+                        }
+                    } else {
+                        message.channel.send(`Enter a valid artist name.\ni.e. \'${config.prefix}rm Drake\'`)
+                    }
+                }, err => {
+                    console.error(err)
+                }
+            )
+        }
+    })
 
-        command(client, ['check', 'new music'], message => {
-            getNewMusic().then(str => {
-                if (str)
-                    message.channel.send('**New Music Today from:**\n\n' + str)
-                else
-                    message.channel.send('No new music today :(')
-            }, err => {
-                console.error(err)
-            })
+    command(client, ['check', 'new music'], message => {
+        getNewMusic().then(str => {
+            if (str)
+                message.channel.send('**New Music Today from:**\n\n' + str)
+            else
+                message.channel.send('No new music today :(')
+        }, err => {
+            console.error(err)
         })
     })
 
-}
+    command(client, ['ls', 'list'], message => {
+        if (artistDict) {
+            let output = '**__All artists__**: \n\n'
+            for (const [name, uri] of Object.entries(artistDict)) {
+                output += `${name} ${uri}\n`
+            }
+            message.channel.send(output)
+        }
+    })
 
-main()
+    command(client, ['-h', '-help'], message => {})
+
+    command(client, ['cc', 'clearchannel'], message => {
+        if (message.member.hasPermission('ADMINISTRATOR')) {
+            message.channel.messages.fetch().then((results) => {
+                message.channel.bulkDelete(results)
+            })
+        }
+    })
+
+
+})
+
 client.login(config.discord_token)
 
 async function addNewArtist(name, uri) {
@@ -130,7 +131,10 @@ async function removeArtist(name) {
 }
 
 async function getNewMusic() {
-    let date = new Date().toJSON().slice(0, 10).replace(/-/g, '-');
+    let date = new Date().toLocaleString('en-US', {
+        timeZone: 'America/New_York'
+    })
+    console.log(date) // TODO Fix Date
     let newMusicStr = ''
     for (const [name, uri] of Object.entries(artistDict)) {
         await spotifyApi.getArtistAlbums(uri, {
@@ -138,7 +142,9 @@ async function getNewMusic() {
             limit: 1
         }).then(data => {
             let album = data.body.items[0]
+            console.log(album.release_date, date)
             if (album && album.release_date === date) {
+                console.log(album.name)
                 newMusicStr += `${album.name} by ${name}\n`
             }
         }, err => {
