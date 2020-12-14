@@ -80,7 +80,8 @@ client.on('ready', async () => {
     })
 
     command(client, ['check', 'new music'], message => {
-        getNewMusic().then(embed => {
+        let newMusicRole = message.guild.roles.cache.find(role => role.name === 'New Music');
+        getNewMusic(newMusicRole).then(embed => {
             if (embed.fields[0])
                 message.channel.send({
                     embed
@@ -146,10 +147,11 @@ async function removeArtist(name) {
     })
 }
 
-async function getNewMusic() {
+async function getNewMusic(roleID) {
     const date = getFormattedDate()
     let embed = {
         'title': '**__New Music Today__**',
+        'description': `${roleID}`,
         'color': '1DB954',
         'fields': []
     }
