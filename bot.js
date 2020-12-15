@@ -21,6 +21,7 @@ const spotifyApi = new SpotifyWebApi({
 });
 
 const channelID = '784183490543222784';
+const prefix = process.env.prefix;
 let artistDict = {};
 let dictSize;
 
@@ -30,18 +31,17 @@ client.on('ready', async () => {
 	await refreshAccessToken();
 	setStatus();
 	let checkMusicAtMidnightJob = new CronJob('*/5 * * * *', () => {
-		client.channels.cache.get(channelID).send('Testing 123');
+		// cron job everyday at 12:01 AM and 12:00 PM '1 0 * * *, 0 12 * * *'
+		console.log('Running cron job');
+		client.channels.cache.get(channelID).send(`${prefix}ls`);
 	});
 	checkMusicAtMidnightJob.start();
 
 	command(client, 'add', (message) => {
-		let artistName = message.content.replace(
-			`${process.env.prefix}add `,
-			''
-		);
-		if (message.content === `${process.env.prefix}add` || !artistName) {
+		let artistName = message.content.replace(`${prefix}add `, '');
+		if (message.content === `${prefix}add` || !artistName) {
 			message.channel.send(
-				`Enter a valid artist name. i.e. \'${process.env.prefix}add Drake\'`
+				`Enter a valid artist name. i.e. \'${prefix}add Drake\'`
 			);
 		} else {
 			spotifyApi
@@ -62,7 +62,7 @@ client.on('ready', async () => {
 							fillArtistDict();
 						} else {
 							message.channel.send(
-								`Enter a valid artist name.\ni.e. \'${process.env.prefix}add Drake\'`
+								`Enter a valid artist name.\ni.e. \'${prefix}add Drake\'`
 							);
 						}
 					},
@@ -74,13 +74,10 @@ client.on('ready', async () => {
 	});
 
 	command(client, 'rm', (message) => {
-		let artistName = message.content.replace(
-			`${process.env.prefix}rm `,
-			''
-		);
-		if (message.content === `${process.env.prefix}add` || !artistName) {
+		let artistName = message.content.replace(`${prefix}rm `, '');
+		if (message.content === `${prefix}add` || !artistName) {
 			message.channel.send(
-				`Enter a valid artist name.\ni.e. \'${process.env.prefix}remove Drake\'`
+				`Enter a valid artist name.\ni.e. \'${prefix}remove Drake\'`
 			);
 		} else {
 			spotifyApi
@@ -104,12 +101,12 @@ client.on('ready', async () => {
 								fillArtistDict();
 							} else {
 								message.channel.send(
-									`Artist does not exist in your list of artists.\nTry \'${process.env.prefix}ls\' to list your added artists.`
+									`Artist does not exist in your list of artists.\nTry \'${prefix}ls\' to list your added artists.`
 								);
 							}
 						} else {
 							message.channel.send(
-								`Enter a valid artist name.\ni.e. \'${process.env.prefix}rm Drake\'`
+								`Enter a valid artist name.\ni.e. \'${prefix}rm Drake\'`
 							);
 						}
 					},
@@ -169,19 +166,19 @@ client.on('ready', async () => {
 			color: '1DB954',
 			fields: [
 				{
-					name: `${process.env.prefix}add`,
+					name: `${prefix}add`,
 					value: 'Add artist to your list of artists.',
 				},
 				{
-					name: `${process.env.prefix}remove (rm)`,
+					name: `${prefix}remove (rm)`,
 					value: 'Remove artist to your list of artists.',
 				},
 				{
-					name: `${process.env.prefix}list (ls)`,
+					name: `${prefix}list (ls)`,
 					value: 'List all artists in your list of artists.',
 				},
 				{
-					name: `${process.env.prefix}check`,
+					name: `${prefix}check`,
 					value: 'Check for new music from your list of artists.',
 				},
 			],
@@ -332,7 +329,7 @@ function setStatus() {
 			type: 'LISTENING',
 		});
 	else
-		client.user.setActivity(`${process.env.prefix}help`, {
+		client.user.setActivity(`${prefix}help`, {
 			type: 'LISTENING',
 		});
 }
