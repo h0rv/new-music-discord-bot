@@ -1,4 +1,4 @@
-const config = require('./config.json'); // config file to store API keys
+// const process.env = require('./process.env.json'); // process.env file to store API keys
 const command = require('./command');
 
 const Discord = require('discord.js');
@@ -6,16 +6,16 @@ const client = new Discord.Client();
 
 const firebase = require('firebase');
 firebase.initializeApp({
-	apiKey: config.firebase_key,
-	databaseURL: config.firebase_url,
-	projectId: config.firebase_project_id,
+	apiKey: process.env.firebase_key,
+	databaseURL: process.env.firebase_url,
+	projectId: process.env.firebase_project_id,
 });
 const database = firebase.database();
 
 const SpotifyWebApi = require('spotify-web-api-node');
 const spotifyApi = new SpotifyWebApi({
-	clientId: config.spotify_client_id,
-	clientSecret: config.spotify_client_secret,
+	clientId: process.env.spotify_client_id,
+	clientSecret: process.env.spotify_client_secret,
 });
 
 let artistDict = {};
@@ -28,10 +28,13 @@ client.on('ready', async () => {
 	setStatus();
 
 	command(client, 'add', (message) => {
-		let artistName = message.content.replace(`${config.prefix}add `, '');
-		if (message.content === `${config.prefix}add` || !artistName) {
+		let artistName = message.content.replace(
+			`${process.env.prefix}add `,
+			''
+		);
+		if (message.content === `${process.env.prefix}add` || !artistName) {
 			message.channel.send(
-				`Enter a valid artist name. i.e. \'${config.prefix}add Drake\'`
+				`Enter a valid artist name. i.e. \'${process.env.prefix}add Drake\'`
 			);
 		} else {
 			spotifyApi
@@ -52,7 +55,7 @@ client.on('ready', async () => {
 							fillArtistDict();
 						} else {
 							message.channel.send(
-								`Enter a valid artist name.\ni.e. \'${config.prefix}add Drake\'`
+								`Enter a valid artist name.\ni.e. \'${process.env.prefix}add Drake\'`
 							);
 						}
 					},
@@ -64,10 +67,13 @@ client.on('ready', async () => {
 	});
 
 	command(client, 'rm', (message) => {
-		let artistName = message.content.replace(`${config.prefix}rm `, '');
-		if (message.content === `${config.prefix}add` || !artistName) {
+		let artistName = message.content.replace(
+			`${process.env.prefix}rm `,
+			''
+		);
+		if (message.content === `${process.env.prefix}add` || !artistName) {
 			message.channel.send(
-				`Enter a valid artist name.\ni.e. \'${config.prefix}remove Drake\'`
+				`Enter a valid artist name.\ni.e. \'${process.env.prefix}remove Drake\'`
 			);
 		} else {
 			spotifyApi
@@ -91,12 +97,12 @@ client.on('ready', async () => {
 								fillArtistDict();
 							} else {
 								message.channel.send(
-									`Artist does not exist in your list of artists.\nTry \'${config.prefix}ls\' to list your added artists.`
+									`Artist does not exist in your list of artists.\nTry \'${process.env.prefix}ls\' to list your added artists.`
 								);
 							}
 						} else {
 							message.channel.send(
-								`Enter a valid artist name.\ni.e. \'${config.prefix}rm Drake\'`
+								`Enter a valid artist name.\ni.e. \'${process.env.prefix}rm Drake\'`
 							);
 						}
 					},
@@ -156,19 +162,19 @@ client.on('ready', async () => {
 			color: '1DB954',
 			fields: [
 				{
-					name: `${config.prefix}add`,
+					name: `${process.env.prefix}add`,
 					value: 'Add artist to your list of artists.',
 				},
 				{
-					name: `${config.prefix}remove (rm)`,
+					name: `${process.env.prefix}remove (rm)`,
 					value: 'Remove artist to your list of artists.',
 				},
 				{
-					name: `${config.prefix}list (ls)`,
+					name: `${process.env.prefix}list (ls)`,
 					value: 'List all artists in your list of artists.',
 				},
 				{
-					name: `${config.prefix}check`,
+					name: `${process.env.prefix}check`,
 					value: 'Check for new music from your list of artists.',
 				},
 			],
@@ -187,7 +193,7 @@ client.on('ready', async () => {
 	});
 });
 
-client.login(config.discord_token);
+client.login(process.env.discord_token);
 
 async function addNewArtist(name, uri) {
 	await database.ref('artists/').child(name).set(uri);
@@ -319,7 +325,7 @@ function setStatus() {
 			type: 'LISTENING',
 		});
 	else
-		client.user.setActivity(`${config.prefix}help`, {
+		client.user.setActivity(`${process.env.prefix}help`, {
 			type: 'LISTENING',
 		});
 }
