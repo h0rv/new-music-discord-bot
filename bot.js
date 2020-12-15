@@ -29,7 +29,7 @@ client.on('ready', async () => {
 	await fillArtistDict();
 	await refreshAccessToken();
 	setStatus();
-	let checkMusicAtMidnightJob = new cron.CronJob('02 55 00,13 * * *', () => {
+	let checkMusicAtMidnightJob = new cron.CronJob('** 02 30', () => {
 		client.channels.cache.get(channelID).send('Testing 123');
 	});
 
