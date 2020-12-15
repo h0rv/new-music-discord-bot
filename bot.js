@@ -190,9 +190,14 @@ client.on('ready', async () => {
 
 	command(client, ['cc', 'clearchannel'], (message) => {
 		if (message.member.hasPermission('ADMINISTRATOR')) {
-			message.channel.messages.fetch().then((results) => {
-				message.channel.bulkDelete(results);
-			});
+			message.channel.messages.fetch().then(
+				(results) => {
+					message.channel.bulkDelete(results);
+				},
+				(err) => {
+					console.error(err);
+				}
+			);
 		}
 	});
 });
