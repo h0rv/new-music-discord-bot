@@ -30,7 +30,7 @@ client.on('ready', async () => {
 	await fillArtistDict();
 	await refreshAccessToken();
 	setStatus();
-	let checkMusicAtMidnightJob = new CronJob('0 1 0,12 * *', () => {
+	let checkMusicAtMidnightJob = new CronJob('1 */12 * * *', () => {
 		// cron job everyday at 12:01 AM and 12:01 PM
 		console.log('Running cron job');
 		client.channels.cache.get(channelID).send(`${prefix}check`);
