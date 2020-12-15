@@ -32,6 +32,7 @@ client.on('ready', async () => {
 	let checkMusicAtMidnightJob = new cron.CronJob('** 02 30', () => {
 		client.channels.cache.get(channelID).send('Testing 123');
 	});
+	checkMusicAtMidnightJob.start();
 
 	command(client, 'add', (message) => {
 		let artistName = message.content.replace(
