@@ -109,7 +109,11 @@ client.on("ready", async () => {
             embed,
           });
         else {
-          let embed = { title: "**__Artists__**", color: "1DB954", fields: [] };
+          let embed = {
+            title: "No Music Today :(",
+            color: "1DB954",
+            fields: [],
+          };
           message.channel.send({
             embed,
           });
@@ -122,7 +126,11 @@ client.on("ready", async () => {
   });
 
   command(client, ["ls", "list"], (message) => {
-    let embed = { title: "**__Artists__**", color: "1DB954", fields: [] };
+    let embed = {
+      title: "**__Artists__**",
+      color: "1DB954",
+      fields: [],
+    };
     let str = "";
     for (const [name, uri] of Object.entries(artistDict)) {
       str += `${name}\n`;
@@ -232,6 +240,7 @@ function getFormattedDate() {
   if (day < 10) formattedDate += `0${day}`;
   else formattedDate += `${day}`;
   return formattedDate;
+  // return '2020-12-10'
 }
 
 async function fillArtistDict() {
