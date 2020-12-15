@@ -1,6 +1,8 @@
 // const process.env = require('./process.env.json'); // process.env file to store API keys
 const command = require('./command');
 
+var CronJob = require('cron').CronJob;
+
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
@@ -18,6 +20,7 @@ const spotifyApi = new SpotifyWebApi({
 	clientSecret: process.env.spotify_client_secret,
 });
 
+const channelID = '784183490543222784';
 let artistDict = {};
 let dictSize;
 
@@ -26,6 +29,9 @@ client.on('ready', async () => {
 	await fillArtistDict();
 	await refreshAccessToken();
 	setStatus();
+	let checkMusicAtMidnightJob = new cron.CronJob('02 55 00,13 * * *', () => {
+		client.channels.cache.get(channelID).send('Testing 123');
+	});
 
 	command(client, 'add', (message) => {
 		let artistName = message.content.replace(

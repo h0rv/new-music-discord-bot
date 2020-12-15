@@ -11,10 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cron": "^1.8.2",
     "discord.js": "^12.5.1",
     "firebase": "^8.1.2",
     "spotify-web-api-node": "^5.0.0"
-  }, 
+  },
   "engines": {
     "node": "14.15.1",
     "npm": "*"
