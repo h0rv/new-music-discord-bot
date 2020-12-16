@@ -354,5 +354,4 @@ async function refreshAccessToken() {
 		}
 	);
 }
-let interval = setInterval(refreshAccessToken(), time);
-
+let interval = setInterval(refreshAccessToken, time);
