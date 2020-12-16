@@ -34,7 +34,7 @@ client.on('ready', async () => {
 		// cron job everyday at 12:01 AM and 12:01 PM
 		console.log('Running cron job');
 		client.channels.cache.get(channelID).send(`${prefix}check`);
-	});
+	}, undefined, true, "America/New_York");
 	checkMusicAtMidnightJob.start();
 
 	command(client, 'add', (message) => {
