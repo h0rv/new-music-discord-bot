@@ -339,9 +339,11 @@ function setStatus() {
 		});
 }
 
+let timeInterval = 3600;
 async function refreshAccessToken() {
 	await spotifyApi.clientCredentialsGrant().then(
 		(data) => {
+			timeInterval = data.body['expires_in'];
 			spotifyApi.setAccessToken(data.body['access_token']);
 		},
 		(err) => {
@@ -352,3 +354,5 @@ async function refreshAccessToken() {
 		}
 	);
 }
+let interval = setInterval(refreshAccessToken(), time);
+
