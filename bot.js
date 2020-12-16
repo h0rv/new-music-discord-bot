@@ -29,7 +29,7 @@ client.on('ready', async () => {
 	console.log('Discord Client Ready');
 	await fillArtistDict();
 	await refreshAccessToken();
-	setStatus();
+	const statusInterval = setInterval(setStatus, 3600000);
 	let checkMusicAtMidnightJob = new CronJob('1 */12 * * *', () => {
 		// cron job everyday at 12:01 AM and 12:01 PM
 		console.log('Running cron job');
@@ -339,11 +339,9 @@ function setStatus() {
 		});
 }
 
-let timeInterval = 3600;
 async function refreshAccessToken() {
 	await spotifyApi.clientCredentialsGrant().then(
 		(data) => {
-			timeInterval = data.body['expires_in'];
 			spotifyApi.setAccessToken(data.body['access_token']);
 		},
 		(err) => {
@@ -354,4 +352,4 @@ async function refreshAccessToken() {
 		}
 	);
 }
-let interval = setInterval(refreshAccessToken, time);
+let interval = setInterval(refreshAccessToken, 3600000);
