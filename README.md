@@ -4,7 +4,7 @@
 
 Bot that checks for new music from added artists daily at both midnight and noon.
 
-Created using Discord.js API, Firebase database, and Spotify Web API. Hosted on Heroku for my own Discord server use.
+Created using Discord API, Discord.js, Firebase database, and Spotify API. Hosted on Heroku for my own Discord server use.
 
 ---
 
