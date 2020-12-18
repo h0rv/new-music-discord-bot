@@ -50,4 +50,4 @@ npm start
 
 ---
 
-![Sample Image](imgs\help.png) ![Sample Image](imgs\check.png)
+![Sample Image](https://raw.githubusercontent.com/robbyhorvath/new-music-discord-bot/main/imgs/help.png) ![Sample Image](https://raw.githubusercontent.com/robbyhorvath/new-music-discord-bot/main/imgs/check.png)
