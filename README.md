@@ -50,4 +50,4 @@ npm start
 
 ---
 
-![](imgs\help.png) ![](imgs\check.png)
+![Sample Image](imgs\help.png) ![Sample Image](imgs\check.png)
