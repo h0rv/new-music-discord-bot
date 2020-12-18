@@ -12,16 +12,19 @@ Created using Discord.js API, Firebase database, and Spotify Web API. Hosted on 
 
 ##### Commands
 
-\>add
-Add artist to your list of artists
-\>remove (rm)
-Remove artist to your list of artists
-\>list (ls)
-List all artists in your list of artists
-\>check
-Check for new music from your list of artists
-\>help
-List these available commands in server
+- \>add
+    -Add artist to your list of artists
+- \>remove (rm)
+    - Remove artist to your list of artists
+ 
+- \>list (ls)
+    - List all artists in your list of artists
+ 
+- \>check
+    - Check for new music from your list of artists
+ 
+- \>help
+    - List these available commands in server
 
 ---
 
