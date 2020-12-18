@@ -125,4 +125,7 @@ dist
 !.vscode/extensions.json
 *.code-workspace
 
+###
+Procfile
+
 # End of https://www.toptal.com/developers/gitignore/api/vscode,node

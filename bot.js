@@ -1,4 +1,4 @@
-// const process.env = require('./process.env.json'); // process.env file to store API keys
+require('dotenv').config(); // process.env to store API keys/tokens
 const command = require('./command');
 
 var CronJob = require('cron').CronJob;
@@ -20,7 +20,7 @@ const spotifyApi = new SpotifyWebApi({
 	clientSecret: process.env.spotify_client_secret,
 });
 
-const channelID = '784183490543222784';
+const channelID = process.env.channel_ID;
 const prefix = process.env.prefix;
 let artistDict = {};
 let dictSize;
@@ -30,11 +30,17 @@ client.on('ready', async () => {
 	await fillArtistDict();
 	await refreshAccessToken();
 	const statusInterval = setInterval(setStatus, 3600000);
-	let checkMusicAtMidnightJob = new CronJob('1 */12 * * *', () => {
-		// cron job everyday at 12:01 AM and 12:01 PM
-		console.log('Running cron job');
-		client.channels.cache.get(channelID).send(`${prefix}check`);
-	}, undefined, true, "America/New_York");
+	let checkMusicAtMidnightJob = new CronJob(
+		'1 */12 * * *',
+		() => {
+			// cron job everyday at 12:01 AM and 12:01 PM
+			console.log('Running cron job');
+			client.channels.cache.get(channelID).send(`${prefix}check`);
+		},
+		undefined,
+		true,
+		'America/New_York'
+	);
 	checkMusicAtMidnightJob.start();
 
 	command(client, 'add', (message) => {
