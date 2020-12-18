@@ -10,7 +10,7 @@ Created using Discord.js API, Firebase database, and Spotify Web API. Hosted on 
 
 ## Usage
 
-##### Commands
+### Commands
 
 - \>add
     - Add artist to your list of artists
