@@ -13,7 +13,7 @@ Created using Discord.js API, Firebase database, and Spotify Web API. Hosted on 
 ##### Commands
 
 - \>add
-    -Add artist to your list of artists
+    - Add artist to your list of artists
 - \>remove (rm)
     - Remove artist to your list of artists
  
