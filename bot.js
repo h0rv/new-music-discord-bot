@@ -19,13 +19,9 @@ const spotifyApi = new SpotifyWebApi({
 	clientId: process.env.spotify_client_id,
 	clientSecret: process.env.spotify_client_secret,
 });
-try {
-	const channelID = process.env.channel_ID;
-	const prefix = process.env.prefix;
-} catch (err) {
-	console.error(err);
-	process.abort();
-}
+
+const channelID = process.env.channel_ID;
+const prefix = process.env.prefix;
 let artistDict = {};
 let dictSize;
 
