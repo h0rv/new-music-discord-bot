@@ -1,7 +1,7 @@
 require('dotenv').config(); // process.env to store API keys/tokens
 const command = require('./command');
 
-const :CronJob = require('cron').CronJob;
+const CronJob = require('cron').CronJob;
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
